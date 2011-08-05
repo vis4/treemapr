@@ -1,0 +1,6 @@
+[submodule "as3project/lib/as3treemap"]
+	path = as3project/lib/as3treemap
+	url = git@github.com:gka/as3treemap.git
+[submodule "as3project/lib/as3corelib"]
+	path = as3project/lib/as3corelib
+	url = git://github.com/mikechambers/as3corelib.git
