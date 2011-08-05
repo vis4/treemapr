@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<comps>
+	<Panel x="10" y="60" width="200" height="800">
+			<VBox spacing="30">
+	
+				<VBox spacing="10"> 
+					<PushButton label="(1) Import data" width="170" height="35" />
+					<HBox x="0" y="10">
+						<RadioButton width="40" label="CSV" />
+						<RadioButton width="40" label="XML" />
+						<RadioButton label="JSON" />
+					</HBox>
+					<HBox x="0" y="10">
+						<RadioButton width="40" label="Flat" />
+						<RadioButton width="40" label="Nested" />
+					</HBox>
+					<HBox>
+						<VBox spacing="7">
+							<Label width="60" text="Label"/>
+							<Label width="60" text="Weight"/>
+							<Label width="60" text="Id"/>
+							<Label width="60" text="Parent-Id"/>
+						</VBox>
+						<VBox spacing="6">
+							<ComboBox />
+							<ComboBox />
+							<ComboBox />
+							<ComboBox />
+						</VBox>
+					</HBox>
+					<HBox x="40">
+						<PushButton width="50" label="Test" />
+						<PushButton width="50" label="Finish" />
+					</HBox>
+				</VBox>
+			
+				<VBox spacing="10"> 
+					<HBox x="0" y="10">
+						<RadioButton width="40" label="PNG" />
+						<RadioButton width="40" label="JPG" />
+						<RadioButton width="40" label="PDF" />
+						<RadioButton width="40" label="SVG" />
+					</HBox>
+					
+					<PushButton label="EXPORT" width="170" height="35" />
+					
+					
+				</VBox>		
+			
+			</VBox>	
+	</Panel>
+</comps>

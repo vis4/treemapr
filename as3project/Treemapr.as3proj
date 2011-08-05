@@ -9,7 +9,7 @@
     <movie width="800" />
     <movie height="600" />
     <movie version="10" />
-    <movie background="#FFFFFF" />
+    <movie background="#000000" />
   </output>
   <!-- Other classes to be compiled into your SWF -->
   <classpaths>
@@ -17,6 +17,8 @@
     <class path="lib\as3corelib\src" />
     <class path="lib\minimalcomps\src" />
     <class path="lib\as3treemap\src" />
+    <class path="lib\vis4.as\src" />
+    <class path="lib\others" />
   </classpaths>
   <!-- Build options -->
   <build>

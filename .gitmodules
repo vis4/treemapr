@@ -7,3 +7,6 @@
 [submodule "as3project/lib/minimalcomps"]
 	path = as3project/lib/minimalcomps
 	url = git@github.com:gka/minimalcomps.git
+[submodule "as3project/lib/vis4.as"]
+	path = as3project/lib/vis4.as
+	url = git@github.com:gka/vis4.as.git
