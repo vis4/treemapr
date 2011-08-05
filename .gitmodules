@@ -4,3 +4,6 @@
 [submodule "as3project/lib/as3corelib"]
 	path = as3project/lib/as3corelib
 	url = git://github.com/mikechambers/as3corelib.git
+[submodule "as3project/lib/minimalcomps"]
+	path = as3project/lib/minimalcomps
+	url = git@github.com:gka/minimalcomps.git
