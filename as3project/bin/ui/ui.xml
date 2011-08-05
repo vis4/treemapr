@@ -1,50 +1,74 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <comps>
-	<Panel x="10" y="60" width="200" height="800">
+	<Panel x="30" y="60" width="200" height="800">
 			<VBox spacing="30">
 	
 				<VBox spacing="10"> 
-					<PushButton label="(1) Import data" width="170" height="35" />
-					<HBox x="0" y="10">
-						<RadioButton width="40" label="CSV" />
-						<RadioButton width="40" label="XML" />
-						<RadioButton label="JSON" />
-					</HBox>
-					<HBox x="0" y="10">
-						<RadioButton width="40" label="Flat" />
-						<RadioButton width="40" label="Nested" />
-					</HBox>
-					<HBox>
+					<PushButton label="IMPORT DATA" width="170" height="35" />
+					<HBox spacing="5">
 						<VBox spacing="7">
-							<Label width="60" text="Label"/>
-							<Label width="60" text="Weight"/>
-							<Label width="60" text="Id"/>
-							<Label width="60" text="Parent-Id"/>
+							<Label width="50" text="Label"/>
+							<Label width="50" text="Weight"/>
+							<Label width="50" text="Id"/>
+							<Label width="50" text="Parent-Id"/>
 						</VBox>
 						<VBox spacing="6">
-							<ComboBox />
-							<ComboBox />
-							<ComboBox />
-							<ComboBox />
+							<ComboBox width="115" />
+							<ComboBox width="115" />
+							<ComboBox width="115" />
+							<ComboBox width="115" />
 						</VBox>
 					</HBox>
-					<HBox x="40">
-						<PushButton width="50" label="Test" />
-						<PushButton width="50" label="Finish" />
-					</HBox>
 				</VBox>
-			
+				
 				<VBox spacing="10"> 
-					<HBox x="0" y="10">
+					
+					<HBox spacing="5">
+						<VBox spacing="7">
+							<Label width="50" text="Layout"/>
+							<Label width="50" text="Labels"/>
+							<Label width="50" text="Color"/>
+						</VBox>
+						<VBox spacing="6">
+							<ComboBox width="115" numVisibleItems="3" id="layoutselect"/>
+							<HBox>
+								<ComboBox width="55" numVisibleItems="4" id="label-v"/>
+								<ComboBox width="55" numVisibleItems="3" id="label-h"/>		
+							</HBox>
+							<ComboBox width="115" numVisibleItems="3" id="colorselect"/>
+						</VBox>
+					</HBox>
+					
+					
+					<HBox >
+						<Label text="BORDER WIDTH" />
+						<InputText width="30" text="0" />
+					</HBox>
+					<HBox >
+						<Label text="BORDER WIDTH (px)" />
+						<InputText width="30" text="1" />
+					</HBox>
+					<HBox >
+						<Label text="CORNER RADIUS" />
+						<InputText width="30" text="0" />
+						
+					</HBox>					
+				</VBox>	
+				
+				<VBox spacing="10"> 
+					<HBox >
 						<RadioButton width="40" label="PNG" />
 						<RadioButton width="40" label="JPG" />
 						<RadioButton width="40" label="PDF" />
 						<RadioButton width="40" label="SVG" />
 					</HBox>
-					
-					<PushButton label="EXPORT" width="170" height="35" />
-					
-					
+					<HBox >
+						<Label text="WIDTH" />
+						<InputText width="43" />
+						<Label text="HEIGHT" />
+						<InputText width="43" />
+					</HBox>					
+					<PushButton label="EXPORT TREEMAP" width="170" height="35" />
 				</VBox>		
 			
 			</VBox>	
