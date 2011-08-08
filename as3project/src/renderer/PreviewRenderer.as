@@ -70,7 +70,7 @@ package renderer
 			var col:uint = Color.fromInt(node.parent.layout.color).lightness('*' + (.9 + Math.random() * .2))._int;
 			var g:Graphics = container.graphics;
 			if (_lastConfig.border > 0) {
-				g.lineStyle(_lastConfig.border, 0);
+				g.lineStyle(_lastConfig.border, Color.fromInt(col,'hsv').value('*.6')._int);
 			} else {
 				g.lineStyle();
 				

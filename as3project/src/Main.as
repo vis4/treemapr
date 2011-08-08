@@ -238,7 +238,7 @@ package
 				var node:TreeNode = new TreeNode( { }, val);
 				numVals = Random.integer(0, 10);
 				for (i = 0; i < numVals; i++) {
-					var subval:Number = i+1 < numVals ? Random.next() * val : val;
+					var subval:Number = i+1 < numVals ? Random.next() * val * .3 : val;
 					val -= subval;
 					node.addChild(new TreeNode( { }, subval));
 				}
