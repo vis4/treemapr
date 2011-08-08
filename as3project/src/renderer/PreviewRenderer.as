@@ -66,7 +66,7 @@ package renderer
 		
 		protected function renderNode(node:TreeNode, container:Sprite, level:uint):void 
 		{
-			var col:uint = Color.fromHSL(Random.integer(0, 120), .8, .3)._int;
+			var col:uint = Color.fromHSV(Random.integer(160, 360), .8, .55)._int;
 			var g:Graphics = container.graphics;
 			if (_lastConfig.border > 0) {
 				g.lineStyle(_lastConfig.border, 0);

@@ -33,19 +33,35 @@
 				
 				<!-- customize -->
 				
-				<VBox spacing="10"> 
+				<VBox spacing="5"> 
+					<HBox spacing="5">
+						<Label width="100" autosize="false" text="Layout"/>
+						<ComboBox width="115" numVisibleItems="3" id="layoutselect"/>
+					</HBox>
+					<HBox>
+						<Label width="50" text="Labels"/>
+						<VBox spacing="4">
+							<HBox spacing="4" alignment="middle">
+								<CheckBox width="40" label="show" />
+								<ColorChooser usePopup="true" />
+							</HBox>
+							<HBox spacing="4">
+								<ComboBox width="56" numVisibleItems="4" id="label-v"/>
+								<ComboBox width="56" enabled="false" numVisibleItems="3" id="label-h"/>	
+							</HBox>
+						</VBox>
+					</HBox>
+					
 					<HBox spacing="5">
 						<VBox spacing="6">
-							<Label width="50" text="Layout"/>
-							<Label width="50" text="Labels"/>
+							
+							
+							
 							<Label width="50" text="Color"/>
 						</VBox>
 						<VBox spacing="4">
-							<ComboBox width="115" numVisibleItems="3" id="layoutselect"/>
-							<HBox spacing="4">
-								<ComboBox width="56" numVisibleItems="4" id="label-v"/>
-								<ComboBox width="56" enabled="false" numVisibleItems="3" id="label-h"/>		
-							</HBox>
+							
+							
 							<ComboBox width="115" numVisibleItems="3" id="colorselect"/>
 						</VBox>
 					</HBox>
@@ -56,11 +72,11 @@
 						<Label width="45" autosize="false" text="Border" />
 						</VBox>
 						<InputText width="25" text="0" />
-						<CheckBox y="4" label="Cascade" />
+						
 					</HBox>
 			
 					<HBox >
-						<Label text="CORNER RADIUS" />
+					
 						<InputText width="30" text="0" />
 						
 					</HBox>					

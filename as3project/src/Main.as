@@ -68,8 +68,8 @@ package
 			var sideAttr:Object = { rotation: -90, selectable: false };
 			
 			new Label('IMPORT', sideFont).attr(sideAttr).place(3, 118, this);
-			new Label('CUSTOMIZE', sideFont).attr(sideAttr).place(3, 330, this);
-			new Label('EXPORT', sideFont).attr(sideAttr).place(3, 470, this);
+			new Label('CUSTOMIZE', sideFont).attr(sideAttr).place(3, 365, this);
+			new Label('EXPORT', sideFont).attr(sideAttr).place(3, 495, this);
 			
 		
 			
