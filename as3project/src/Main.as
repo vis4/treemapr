@@ -69,7 +69,7 @@ package
 			
 			new Label('IMPORT', sideFont).attr(sideAttr).place(3, 118, this);
 			new Label('CUSTOMIZE', sideFont).attr(sideAttr).place(3, 365, this);
-			new Label('EXPORT', sideFont).attr(sideAttr).place(3, 495, this);
+			new Label('EXPORT', sideFont).attr(sideAttr).place(3, 495				, this);
 			
 		
 			
@@ -225,7 +225,8 @@ package
 		protected function randomTree():Tree
 		{
 			randomValues = [];
-			for (var i:uint = 0; i < Random.integer(10,60); i++) {
+			var numVals:uint = Random.integer(10, 20);
+			for (var i:uint = 0; i < numVals; i++) {
 				randomValues.push(Random.integer(0, 100));
 			}
 			var sum:Number = 0;
@@ -234,7 +235,15 @@ package
 			}
 			var root:TreeNode = new TreeNode( { }, sum);
 			for each (val in randomValues) {
-				root.addChild(new TreeNode( { }, val));
+				var node:TreeNode = new TreeNode( { }, val);
+				numVals = Random.integer(0, 10);
+				for (i = 0; i < numVals; i++) {
+					var subval:Number = i+1 < numVals ? Random.next() * val : val;
+					val -= subval;
+					node.addChild(new TreeNode( { }, subval));
+				}
+				
+				root.addChild(node);
 				
 			}
 			return new Tree(root);

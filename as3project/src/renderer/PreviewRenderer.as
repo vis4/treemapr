@@ -9,6 +9,7 @@ package renderer
 	import net.vis4.color.Color;
 	import net.vis4.treemap.data.Tree;
 	import net.vis4.treemap.data.TreeNode;
+	import net.vis4.treemap.display.Sprite3;
 	import net.vis4.treemap.TreeMap;
 	/**
 	 * ...
@@ -48,7 +49,7 @@ package renderer
 				_container.stage.addEventListener(Event.RESIZE, onResize);
 			}
 			
-			var treemap:TreeMap = new TreeMap(tree, bounds, tmconfig.layout, renderNode);
+			var treemap:TreeMap = new TreeMap(tree, bounds, tmconfig.layout, renderNode, renderBranch);
 			_container.addChild(treemap);
 			
 			// save for on-resize rendering
@@ -66,7 +67,7 @@ package renderer
 		
 		protected function renderNode(node:TreeNode, container:Sprite, level:uint):void 
 		{
-			var col:uint = Color.fromHSV(Random.integer(160, 360), .8, .55)._int;
+			var col:uint = Color.fromInt(node.parent.layout.color).lightness('*' + (.9 + Math.random() * .2))._int;
 			var g:Graphics = container.graphics;
 			if (_lastConfig.border > 0) {
 				g.lineStyle(_lastConfig.border, 0);
@@ -91,9 +92,10 @@ package renderer
 			
 		}
 		
-		protected function renderBranch():void 
+		protected function renderBranch(node:TreeNode, container:Sprite3, level:uint):void 
 		{
-			
+			var col:uint =  Color.fromHSV(Random.integer(120, 360), .8, .65)._int;
+			node.layout.color = col;
 		}
 		
 	}
