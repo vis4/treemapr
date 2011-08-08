@@ -26,14 +26,11 @@ package ui
 			}
 			
 			var root:TreeNode = new TreeNode( { }, sum);
-			
 			for each (val in values) {
 				root.addChild(new TreeNode( { }, val));
 				
 			}
-			
 			var tree:Tree = new Tree(root);
-			
 			var treemap:TreeMap = new TreeMap(
 				tree, 
 				bounds, 

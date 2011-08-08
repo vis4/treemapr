@@ -1,53 +1,64 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <comps>
-	<Panel x="30" y="60" width="200" height="800">
+	<Panel x="32" y="60" width="170" height="800">
 			<VBox spacing="30">
-	
+				
+				<!-- import -->
+				
 				<VBox spacing="10"> 
-					<PushButton label="IMPORT DATA" width="170" height="35" />
+					<PushButton label="IMPORT DATA" id="import" width="170" height="35" />
+					<HBox y="40" spacing="5">
+						<VBox y="-4"><Label width="50" text="Format:" /></VBox>
+						<VBox y="-4" ><Label width="30" id="filetype" y="-4" text="---" enabled="false" /></VBox>
+						<RadioButton width="30" label="Flat" id="flat" enabled="false" groupName="flatnested" />
+						<RadioButton width="40" label="Nested" id="nested" enabled="false" groupName="flatnested" />
+					</HBox>
 					<HBox spacing="5">
-						<VBox spacing="7">
+						<VBox spacing="6">
 							<Label width="50" text="Label"/>
 							<Label width="50" text="Weight"/>
-							<Label width="50" text="Id"/>
-							<Label width="50" text="Parent-Id"/>
+							<Label width="50" id="label-id" text="Id"/>
+							<Label width="50" id="label-pid" text="Parent-Id"/>
+							<Label width="50" id="label-children" text="Children"/>
 						</VBox>
-						<VBox spacing="6">
-							<ComboBox width="115" />
-							<ComboBox width="115" />
-							<ComboBox width="115" />
-							<ComboBox width="115" />
+						<VBox spacing="4">
+							<ComboBox width="115" id="combobox-label" />
+							<ComboBox width="115" id="combobox-weight" />
+							<ComboBox width="115" id="combobox-id" />
+							<ComboBox width="115" id="combobox-pid" />
+							<ComboBox width="115" id="combobox-children" />
 						</VBox>
 					</HBox>
 				</VBox>
 				
+				<!-- customize -->
+				
 				<VBox spacing="10"> 
-					
 					<HBox spacing="5">
-						<VBox spacing="7">
+						<VBox spacing="6">
 							<Label width="50" text="Layout"/>
 							<Label width="50" text="Labels"/>
 							<Label width="50" text="Color"/>
 						</VBox>
-						<VBox spacing="6">
+						<VBox spacing="4">
 							<ComboBox width="115" numVisibleItems="3" id="layoutselect"/>
-							<HBox>
-								<ComboBox width="55" numVisibleItems="4" id="label-v"/>
-								<ComboBox width="55" numVisibleItems="3" id="label-h"/>		
+							<HBox spacing="4">
+								<ComboBox width="56" numVisibleItems="4" id="label-v"/>
+								<ComboBox width="56" enabled="false" numVisibleItems="3" id="label-h"/>		
 							</HBox>
 							<ComboBox width="115" numVisibleItems="3" id="colorselect"/>
 						</VBox>
 					</HBox>
 					
 					
-					<HBox >
-						<Label text="BORDER WIDTH" />
-						<InputText width="30" text="0" />
+					<HBox spacing="10">
+						<VBox>
+						<Label width="45" autosize="false" text="Border" />
+						</VBox>
+						<InputText width="25" text="0" />
+						<CheckBox y="4" label="Cascade" />
 					</HBox>
-					<HBox >
-						<Label text="BORDER WIDTH (px)" />
-						<InputText width="30" text="1" />
-					</HBox>
+			
 					<HBox >
 						<Label text="CORNER RADIUS" />
 						<InputText width="30" text="0" />
@@ -55,18 +66,25 @@
 					</HBox>					
 				</VBox>	
 				
+				<!-- export -->
+				
 				<VBox spacing="10"> 
 					<HBox >
-						<RadioButton width="40" label="PNG" />
-						<RadioButton width="40" label="JPG" />
-						<RadioButton width="40" label="PDF" />
-						<RadioButton width="40" label="SVG" />
+						<RadioButton width="40" label="PNG" groupName="exportFormat" />
+						<RadioButton width="40" label="JPG" groupName="exportFormat" />
+						<RadioButton width="40" label="PDF" groupName="exportFormat" />
+						<RadioButton width="40" label="SVG" groupName="exportFormat" />
+					</HBox>
+					<HBox >
+						<RadioButton width="40" groupName="exportFormat" label="HTML" />
+						<RadioButton width="40" groupName="exportFormat" label="D3.JS" />
+						<RadioButton width="40" groupName="exportFormat" label="RAPHAEL" />
 					</HBox>
 					<HBox >
 						<Label text="WIDTH" />
-						<InputText width="43" />
+						<InputText width="43" text="800" />
 						<Label text="HEIGHT" />
-						<InputText width="43" />
+						<InputText width="43" text="600" />
 					</HBox>					
 					<PushButton label="EXPORT TREEMAP" width="170" height="35" />
 				</VBox>		

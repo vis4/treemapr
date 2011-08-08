@@ -8,7 +8,7 @@
     <movie fps="30" />
     <movie width="800" />
     <movie height="600" />
-    <movie version="10" />
+    <movie version="11" />
     <movie background="#000000" />
   </output>
   <!-- Other classes to be compiled into your SWF -->
@@ -52,7 +52,7 @@
   </includeLibraries>
   <!-- SWC Libraries -->
   <libraryPaths>
-    <!-- example: <element path="..." /> -->
+    <element path="lib\AlivePDF.swc" />
   </libraryPaths>
   <!-- External Libraries -->
   <externalLibraryPaths>
