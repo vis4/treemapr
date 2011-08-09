@@ -2,15 +2,19 @@ package renderer
 {
 	import config.TreeMapConfig;
 	import flash.display.Graphics;
+	import flash.display.Shape;
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.geom.Rectangle;
 	import math.Random;
 	import net.vis4.color.Color;
+	import net.vis4.text.fonts.SystemFont;
+	import net.vis4.text.Label;
 	import net.vis4.treemap.data.Tree;
 	import net.vis4.treemap.data.TreeNode;
 	import net.vis4.treemap.display.Sprite3;
 	import net.vis4.treemap.TreeMap;
+	import ui.MiniTreemap;
 	/**
 	 * ...
 	 * @author gka
@@ -34,22 +38,24 @@ package renderer
 		}
 		
 		protected var _lastTree:Tree;
-		protected var _lastConfig:TreeMapConfig;
 		protected var _lastTreeMap:TreeMap;
 		
 		override public function render(tree:Tree, bounds:Rectangle, tmconfig:TreeMapConfig):void 
 		{
 			// ignore bounds
-			bounds = new Rectangle(_left, _top, _container.stage.stageWidth - _left - _right, _container.stage.stageHeight - _top - _bottom);
+			bounds = _container.stage ? new Rectangle(_left, _top, _container.stage.stageWidth - _left - _right, _container.stage.stageHeight - _top - _bottom) : bounds;
 			
 			// remove old treemap
-			if (_lastTreeMap) {
+			if (_lastTreeMap !== null) {
 				_container.removeChild(_lastTreeMap);
 			} else {
-				_container.stage.addEventListener(Event.RESIZE, onResize);
+				if (_container.stage) _container.stage.addEventListener(Event.RESIZE, onResize);
 			}
 			
-			var treemap:TreeMap = new TreeMap(tree, bounds, tmconfig.layout, renderNode, renderBranch);
+			
+			
+			var treemap:TreeMap = new TreeMap(tree, bounds, getLayout(tmconfig.layout), renderNode, renderBranch);
+			
 			_container.addChild(treemap);
 			
 			// save for on-resize rendering
@@ -60,14 +66,18 @@ package renderer
 			treemap.render();
 		}
 		
+		protected var _labelCache:Array = [];
+		
+		
+		
 		protected function onResize(e:Event):void 
 		{
 			render(_lastTree, null, _lastConfig);
 		}
 		
-		protected function renderNode(node:TreeNode, container:Sprite, level:uint):void 
+		override protected function renderNode(node:TreeNode, container:Sprite, level:uint):void 
 		{
-			var col:uint = Color.fromInt(node.parent.layout.color).lightness('*' + (.9 + Math.random() * .2))._int;
+			var col:uint = getNodeColor(node, level);	
 			var g:Graphics = container.graphics;
 			if (_lastConfig.border > 0) {
 				g.lineStyle(_lastConfig.border, Color.fromInt(col,'hsv').value('*.6')._int);
@@ -89,13 +99,33 @@ package renderer
 				g.drawRoundRect(size.left, size.top, size.width, size.height, _lastConfig.borderRadius, _lastConfig.borderRadius);
 			}
 			
+			if (_lastConfig.showLabels) {
+				var label:Label = new Label(node.data[_lastConfig.labelProperty], new SystemFont( { name: _lastConfig.labelFont, size: _lastConfig.labelSize, color: _lastConfig.labelColor } )).place(0, 0, container);
+				
+				switch (_lastConfig.labelHorzAlign) {
+					case 'left': 	label.x = node.layout.x+2; break;
+					case 'center': label.x = node.layout.x + (node.layout.width - label.width) * .5; break;
+					case 'right': 	label.x = node.layout.x-2 + node.layout.width - label.width; break;
+				}
+				switch (_lastConfig.labelVertAlign) {
+					case 'top': 	label.y = node.layout.y+2; break;
+					case 'middle': label.y = node.layout.y + (node.layout.height - label.height) * .5; break;
+					case 'bottom': label.y = node.layout.y -2+ node.layout.height - label.height; break;
+				}
+				
+				var mask:Shape = new Shape();
+				mask.graphics.beginFill(0xff0000);
+				mask.graphics.drawRect(node.layout.x+2, node.layout.y+2, node.layout.width-4, node.layout.height-4);
+				label.mask = mask;
+			}
+			
 			
 		}
 		
-		protected function renderBranch(node:TreeNode, container:Sprite3, level:uint):void 
+		override protected function renderBranch(node:TreeNode, container:Sprite3, level:uint):void 
 		{
-			var col:uint =  Color.fromHSV(Random.integer(120, 360), .8, .65)._int;
-			node.layout.color = col;
+			
+			node.layout.color = getNodeColor(node, level);
 		}
 		
 	}

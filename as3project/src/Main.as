@@ -2,10 +2,14 @@ package
 {
 	import assets.font.Lato;
 	import assets.font.RondaSeven;
+	import com.adobe.images.PNGEncoder;
+	import com.adobe.serialization.json.JSON;
 	import com.bit101.components.CheckBox;
+	import com.bit101.components.ColorChooser;
 	import com.bit101.components.ComboBox;
 	import com.bit101.components.Component;
 	import com.bit101.components.HBox;
+	import com.bit101.components.InputText;
 	import com.bit101.components.PushButton;
 	import com.bit101.components.RadioButton;
 	import com.bit101.components.Style;
@@ -14,6 +18,8 @@ package
 	import data.DataDescription;
 	import data.TreeImporter;
 	import data.XMLTreeImporter;
+	import flash.display.Bitmap;
+	import flash.display.BitmapData;
 	import flash.display.Graphics;
 	import flash.display.Loader;
 	import flash.display.Sprite;
@@ -28,10 +34,15 @@ package
 	import flash.text.FontStyle;
 	import flash.text.FontType;
 	import flash.text.TextField;
+	import flash.utils.ByteArray;
 	import math.Random;
 	import net.vis4.text.Label;
 	import net.vis4.treemap.data.Tree;
 	import net.vis4.treemap.data.TreeNode;
+	import net.vis4.utils.DelayedTask;
+	import net.vis4.utils.FileUtil;
+	import org.alivepdf.encoding.JPEGEncoder;
+	import renderer.PDFRenderer;
 	import renderer.PreviewRenderer;
 	import ui.MiniTreemap;
 	import ui.Section;
@@ -49,6 +60,7 @@ package
 		protected var fileRef:FileReference;
 		protected var sections:Array = [];
 		protected var sectionsById:Object = { };
+		protected var _demoTree:Tree;
 		
 		public function Main():void 
 		{
@@ -77,7 +89,7 @@ package
 			
 			
 			
-			var treemapConfig:TreeMapConfig = new TreeMapConfig();
+			/*var treemapConfig:TreeMapConfig = new TreeMapConfig();
 			
 			treemapConfig.padding = 0;
 			treemapConfig.border = 1;
@@ -136,8 +148,10 @@ package
 			trace(XMLTreeImporter.describeData(xml1));
 			trace(XMLTreeImporter.describeData(xml2));
 			trace(XMLTreeImporter.describeData(xml3));
-			
+			*/
 		}
+		
+		
 		
 		protected function onUiXmlLoaded(e:Event):void 
 		{
@@ -148,7 +162,7 @@ package
 				for each (var sectXML:XML in uixml..comp) {
 					var section:Section = new Section(sectXML.@title, sectXML, sectXML.@open == "true");
 					addChild(section);
-					section.addEventListener(Event.RESIZE, layoutSections);
+					section.addEventListener(Event.RESIZE, onSectionResize);
 					sectionsById[String(sectXML.@title).toLowerCase()] = section;
 					sections.push(section);
 				}
@@ -162,25 +176,135 @@ package
 			
 			initGuiEvents();
 			
+			loadDemoData();
+			
+		}
+		
+	
+		
+		protected function onSectionResize(e:Event = null):void 
+		{
+			new DelayedTask(33, this, layoutSections);
 		}
 		
 		protected function initGuiEvents():void 
 		{
-			CB("customize.layout").items = ['squarify', 'slice and dice', 'strip'];
-			CB("customize.layout").selectedIndex = 0;
+			CB('customize.layout').items = ['squarify', 'strip', 'slice and dice'];
+			CB('customize.layout').selectedIndex = 0;
+			CB('customize.layout').addEventListener(Event.SELECT, updateTreeMap);
 			
 			CB("customize.colorMode").items = ['single', 'random', 'by value'];
 			
 			CHK("customize.showLabels").selected = true;
 			CHK("customize.showLabels").addEventListener(Event.CHANGE, onShowLabelsChange);
+			CHK("customize.showLabels").addEventListener(Event.CHANGE, updateTreeMap);
+			CB('customize.layout').addEventListener(Event.CHANGE, updateTreeMap);
+			
 			CB("customize.lblVert").items = ['top', 'middle', 'bottom'];
 			CB("customize.lblVert").selectedIndex = 0;;
+			CB('customize.lblVert').addEventListener(Event.SELECT, updateTreeMap);
 			CB("customize.lblHorz").items = ['left', 'center', 'right'];
 			CB("customize.lblHorz").selectedIndex = 0;
-			CB("customize.lblFont").items = getDeviceFonts();   
+			CB('customize.lblHorz').addEventListener(Event.SELECT, updateTreeMap);
+			CB("customize.lblFont").items = getDeviceFonts();  
+			CB('customize.lblFont').selectedItem = 'Arial';
+			CB('customize.lblFont').addEventListener(Event.SELECT, updateTreeMap);
+			IT('customize.lblFontSize').addEventListener(Event.CHANGE, updateTreeMap);
+			CS('customize.lblColor').addEventListener(Event.CHANGE, updateTreeMap);
+			
+			CB('customize.colorMode').addEventListener(Event.SELECT, onColorModeChange);
+			CB('customize.colorMode').selectedIndex = 0;
+			CB('customize.colorMode').addEventListener(Event.SELECT, updateTreeMap);
+			CS('customize.singleColor').addEventListener(Event.CHANGE, updateTreeMap);
+			
+			CB('customize.colorScale').items = ['cool', 'hot', 'ramp', 'diverging']; 
+			CB('customize.colorScale').addEventListener(Event.SELECT, onColorScaleChange);
+			CB('customize.colorScale').selectedIndex = 0;
+			
+			/*
+			 * EXPORT
+			 */
+			
+			PB('export.btnExport').addEventListener(MouseEvent.CLICK, exportTreeMap);
+			
+			new DelayedTask(333, this, layoutSections);
+		}
+			
+		protected function loadDemoData():void 
+		{
+			var ldr:URLLoader = new URLLoader();
+			ldr.addEventListener(Event.COMPLETE, onDemoDataLoaded);
+			ldr.load(new URLRequest('flare.json'));
+		}
 		
-			CB("customize.colorScale").items = ['cool', 'hot', 'ramp', 'diverging']; 
-			//sComp("customize.scale").visible = false;
+		protected function onDemoDataLoaded(e:Event):void 
+		{
+			var jsondata:Object = JSON.decode(URLLoader(e.target).data);
+			
+			_demoTree = new Tree(parseFlareTree(jsondata));
+			
+			CB('customize.colorValue').items = _dataColumns;
+			
+			updateTreeMap();
+			
+		}
+		
+		protected var _dataColumns:Array = [];
+		protected var preview:PreviewRenderer;
+		
+		protected function parseFlareTree(jsondata:Object):TreeNode 
+		{
+			var node:TreeNode = new TreeNode(jsondata, jsondata.children ? 0 : jsondata.size);
+			node.data.classes = jsondata.children ? 0 : 1;
+			
+			for (var v:String in node.data) {
+				if (_dataColumns.indexOf(v) < 0) _dataColumns.push(v);
+			}
+			for each (var childData:Object in jsondata.children) {
+				var child:TreeNode = parseFlareTree(childData);
+				node.weight += child.weight;
+				node.addChild(child);
+				node.data.classes += child.data.classes;
+			}
+			return node;
+		}
+		
+		protected function getCurrentTreeMapConfig():TreeMapConfig
+		{
+			var tmconf:TreeMapConfig = new TreeMapConfig();
+			tmconf.showLabels = CHK('customize.showLabels').selected;
+			tmconf.labelColor = CS('customize.lblColor').value;
+			tmconf.labelFont = String(CB('customize.lblFont').selectedItem);
+			tmconf.labelHorzAlign = String(CB('customize.lblHorz').selectedItem);
+			tmconf.labelVertAlign = String(CB('customize.lblVert').selectedItem);
+			tmconf.labelSize = Number(IT('customize.lblFontSize').text);
+			tmconf.layout = String(CB('customize.layout').selectedItem);
+			
+			tmconf.colorMode = String(CB('customize.colorMode').selectedItem);
+			tmconf.singleColor = CS('customize.singleColor').value;
+			
+			return tmconf;
+		}
+		
+		protected function updateTreeMap(e:Event = null):void
+		{
+			preview = preview !== null ? preview : new PreviewRenderer(this, 10, 10, 10, 222);
+			preview.render(_demoTree, null, getCurrentTreeMapConfig());
+		}
+		
+		
+		protected function onColorModeChange(e:Event):void 
+		{
+			Comp('customize.colorMode-scale').visible = CB("customize.colorMode").selectedIndex == 2;
+			Comp('customize.colorMode-single').visible = CB("customize.colorMode").selectedIndex == 0;
+			Comp('customize.colorMode-random').visible = CB("customize.colorMode").selectedIndex == 1;
+		}
+		
+		protected function onColorScaleChange(e:Event):void 
+		{
+			Comp('customize.colorMode-scale-ramp').visible = CB("customize.colorScale").selectedIndex == 2;
+			Comp('customize.colorMode-scale-diverging').visible = CB("customize.colorScale").selectedIndex == 3;
+			
 		}
 		
 		/*
@@ -220,6 +344,43 @@ package
 				yo += s.height + 30;
 				
 			}
+		}
+		
+		
+		protected function exportTreeMap(e:MouseEvent):void 
+		{
+			var format:String = RadioButton.getGroupValue('exportFormat');
+			trace('exporting to ' + format);
+			
+			var w:Number = Number(IT('export.width').text),
+				 h:Number = Number(IT('export.height').text);
+			
+			switch (format) {
+				case 'PNG':
+				case 'JPG':
+					exportAsImage(format, w, h); break;
+				case 'PDF':
+					exportPDF(w, h); break;
+			}
+		}
+		
+		protected function exportAsImage(format:String, w:Number, h:Number):void
+		{
+			
+			var image:BitmapData = new BitmapData(w, h);
+			var canvas:Sprite = new Sprite();
+			var treemap:PreviewRenderer = new PreviewRenderer(canvas, 0,0,0,0);
+			treemap.render(_demoTree, new Rectangle(0,0,w-1,h-1), getCurrentTreeMapConfig());
+			image.draw(canvas);
+			
+			var imgData:ByteArray = format == 'PNG' ? PNGEncoder.encode(image) : new JPEGEncoder(95).encode(image);
+			
+			FileUtil.send('treemap-'+w+'x'+h+'.' + format.toLowerCase(), imgData);
+		}
+
+		protected function exportPDF(w:Number, h:Number):void
+		{
+			new PDFRenderer().render(_demoTree, new Rectangle(0, 0, w, h), getCurrentTreeMapConfig());
 		}
 		
 		protected function uiComplete(e:Event):void 
@@ -335,6 +496,11 @@ package
 			}
 			return new Tree(root);
 		}
+		
+		
+		protected function IT(id:String):InputText { return InputText(Comp(id));  }
+		
+		protected function CS(id:String):ColorChooser { return ColorChooser(Comp(id));  }
 		
 		protected function PB(id:String):PushButton { return PushButton(Comp(id));  }
 		

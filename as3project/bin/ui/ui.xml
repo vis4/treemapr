@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ui>
-	<comp title="IMPORT" open="true">
+	<comp title="IMPORT" open="false">
 		
 		<VBox spacing="10"> 
 			<PushButton label="IMPORT DATA" id="import" width="180" height="35" />
@@ -31,48 +31,15 @@
 	</comp>
 	<comp title="CUSTOMIZE" open="true">
 				
-			<VBox spacing="10"> 
+			<VBox spacing="15"> 
 				<HBox spacing="5">
-					<Label width="50" text="Layout"/>
+					<Label width="50" text="LAYOUT"/>
 					<ComboBox width="125" numVisibleItems="3" id="layout"/>
 				</HBox>
 				
 				<VBox spacing="5">
-					<HBox spacing="5">
-						<VBox spacing="6">
-							<Label width="50" text="Color"/>
-						</VBox>
-						<VBox spacing="4">
-							<ComboBox width="125" numVisibleItems="3" id="colorMode"/>
-						</VBox>
-					</HBox>
 					<HBox>
-						<Label width="50" text=".."/>
-						<ColorChooser usePopup="true" id="singleColor" value="0x387396" />
-					</HBox>
-					<VBox id="colorMode-scale">
-						<HBox alignment="middle">
-							<Label width="50" text=".. Value"/>
-							<ComboBox width="125" numVisibleItems="5" id="colorValue"/>
-						</HBox>
-						<HBox>
-							<Label width="50" text=".. Palette"/>
-							<ComboBox width="125" numVisibleItems="3" id="colorScale"/>
-						</HBox>
-						<HBox alignment="middle">
-							
-							<Label width="50" text=".. Range"/>
-							<Label text="Min"/>
-							<Label text="Max"/>
-						</HBox>
-						
-					</VBox>
-					
-				</VBox>
-					
-				<VBox spacing="5">
-					<HBox>
-						<Label width="50" text="Labels"/>
+						<Label width="50" text="LABELS"/>
 						<HBox spacing="4" alignment="middle">
 							<CheckBox width="56" label="show" id="showLabels" />
 							<ColorChooser usePopup="true" id="lblColor" value="0xFFFFFF" />
@@ -82,17 +49,86 @@
 						<Label width="50" text=".. Font"/>
 						<HBox spacing="4" alignment="middle">
 							<ComboBox width="100" numVisibleItems="10" id="lblFont"/>
-							<InputText width="22" height="20" text="12" />
+							<InputText width="22" height="20" id="lblFontSize" text="11" />
 						</HBox>
 					</HBox>
 					<HBox>
 						<Label width="50" text=".. Align"/>
 						<HBox spacing="4" alignment="middle">
-							<ComboBox width="61" numVisibleItems="3" id="lblVert"/>
-							<ComboBox width="61" numVisibleItems="3" id="lblHorz"/>	
+							<ComboBox width="61" numVisibleItems="3" id="lblHorz"/>
+							<ComboBox width="61" numVisibleItems="3" id="lblVert"/>	
 						</HBox>
 					</HBox>
 				</VBox>
+				
+				<VBox spacing="5">
+					<HBox spacing="5">
+						<VBox spacing="6">
+							<Label width="50" text="COLOR"/>
+						</VBox>
+						<VBox spacing="4">
+							<ComboBox width="125" numVisibleItems="3" id="colorMode"/>
+						</VBox>
+					</HBox>
+					<HBox id="colorMode-single">
+						<Label width="50" text=""/>
+						<ColorChooser usePopup="true" id="singleColor" value="0x387396" />
+					</HBox>
+					<HBox id="colorMode-random">
+						
+					</HBox>
+					<VBox id="colorMode-scale">
+						<HBox alignment="middle">
+							<Label width="50" text="Value"/>
+							<ComboBox width="125" numVisibleItems="5" id="colorValue"/>
+						</HBox>
+						<HBox>
+							<Label width="50" text="Palette"/>
+							<ComboBox width="65" numVisibleItems="4" id="colorScale"/>
+							<Label text="steps" />
+							<InputText width="25" height="20" text="5" />
+						</HBox>
+						<VBox id="colorMode-scale-ramp">
+							<HBox spacing="5">
+								<Label width="50" text="from" align="right" />
+								<InputText width="45" id="rampFromValue" text="0" />
+								<Label width="5" text="" />
+								<ColorChooser usePopup="true" id="rampFromColor" value="0xf1eef6" />
+							</HBox>
+							<HBox spacing="5">
+								<Label width="50" text="to" align="right" />
+								<InputText width="45" id="rampToValue" text="100" />
+								<Label width="5" text="" />
+								<ColorChooser usePopup="true" id="rampToColor" value="0x045a8d" />
+							</HBox>
+						</VBox>
+						<VBox id="colorMode-scale-diverging">
+							<HBox spacing="5">
+								<Label width="50" text="from" align="right" />
+								<InputText width="45" id="divergingFromValue" text="-100" />
+								<Label width="5" text="" />
+								<ColorChooser usePopup="true" id="divergingFromColor" value="0xd73027" />
+							</HBox>
+							<HBox spacing="5">
+								<Label width="50" text="mid" align="right" />
+								<InputText width="45" id="divergingToValue" text="0" />
+								<Label width="5" text="" />
+								<ColorChooser usePopup="true" id="divergingMidColor" value="0xffffbf" />
+							</HBox>
+							<HBox spacing="5">
+								<Label width="50" text="to" align="right" />
+								<InputText width="45" id="divergingToValue" text="100" />
+								<Label width="5" text="" />
+								<ColorChooser usePopup="true" id="divergingToColor" value="0x1a9850" />
+							</HBox>
+						</VBox>
+						
+						
+					</VBox>
+					
+				</VBox>
+					
+				
 				<!--
 					<VBox spacing="6">
 						
@@ -115,23 +151,23 @@
 		
 		<VBox spacing="10"> 
 			<HBox >
-				<RadioButton width="40" label="PNG" groupName="exportFormat" />
+				<RadioButton width="40" label="PNG" selected="true" groupName="exportFormat" />
 				<RadioButton width="40" label="JPG" groupName="exportFormat" />
 				<RadioButton width="40" label="PDF" groupName="exportFormat" />
-				<RadioButton width="40" label="SVG" groupName="exportFormat" />
+				<RadioButton width="40" label="SVG" enabled="false" groupName="exportFormat" />
 			</HBox>
 			<HBox >
-				<RadioButton width="40" groupName="exportFormat" label="HTML" />
-				<RadioButton width="40" groupName="exportFormat" label="D3.JS" />
-				<RadioButton width="40" groupName="exportFormat" label="RAPHAEL" />
+				<RadioButton width="40" enabled="false" groupName="exportFormat" label="HTML" />
+				<RadioButton width="40" enabled="false" groupName="exportFormat" label="D3.JS" />
+				<RadioButton width="40" enabled="false" groupName="exportFormat" label="RAPHAEL" />
 			</HBox>
 			<HBox >
 				<Label text="WIDTH" />
-				<InputText width="43" text="800" />
+				<InputText width="43" id="width" text="800" />
 				<Label text="HEIGHT" />
-				<InputText width="43" text="600" />
+				<InputText width="43" id="height" text="600" />
 			</HBox>			
-			<PushButton label="EXPORT TREEMAP" width="170" height="35" />
+			<PushButton label="EXPORT TREEMAP" id="btnExport" width="170" height="35" />
 		</VBox>		
 		
 	</comp>
