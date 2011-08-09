@@ -1,110 +1,138 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<comps>
-	<Panel x="32" y="60" width="170" height="800">
-			<VBox spacing="30">
-				
-				<!-- import -->
-				
-				<VBox spacing="10"> 
-					<PushButton label="IMPORT DATA" id="import" width="170" height="35" />
-					<HBox y="40" spacing="5">
-						<VBox y="-4"><Label width="50" text="Format:" /></VBox>
-						<VBox y="-4" ><Label width="30" id="filetype" y="-4" text="---" enabled="false" /></VBox>
-						<RadioButton width="30" label="Flat" id="flat" enabled="false" groupName="flatnested" />
-						<RadioButton width="40" label="Nested" id="nested" enabled="false" groupName="flatnested" />
-					</HBox>
-					<HBox spacing="5">
-						<VBox spacing="6">
-							<Label width="50" text="Label"/>
-							<Label width="50" text="Weight"/>
-							<Label width="50" id="label-id" text="Id"/>
-							<Label width="50" id="label-pid" text="Parent-Id"/>
-							<Label width="50" id="label-children" text="Children"/>
-						</VBox>
-						<VBox spacing="4">
-							<ComboBox width="115" id="combobox-label" />
-							<ComboBox width="115" id="combobox-weight" />
-							<ComboBox width="115" id="combobox-id" />
-							<ComboBox width="115" id="combobox-pid" />
-							<ComboBox width="115" id="combobox-children" />
-						</VBox>
-					</HBox>
+<ui>
+	<comp title="IMPORT" open="true">
+		
+		<VBox spacing="10"> 
+			<PushButton label="IMPORT DATA" id="import" width="180" height="35" />
+			<HBox y="40" spacing="5">
+				<VBox y="-4"><Label width="47" text="Format:" /></VBox>
+				<VBox y="-4" ><Label width="40" id="filetype" y="-4" text="---" enabled="false" /></VBox>
+				<RadioButton width="30" label="Flat" id="flat" enabled="false" groupName="flatnested" />
+				<RadioButton width="40" label="Nested" id="nested" enabled="false" groupName="flatnested" />
+			</HBox>
+			<HBox spacing="5">
+				<VBox spacing="6">
+					<Label width="50" text="Label"/>
+					<Label text="Weight"/>
+					<Label id="label-id" text="Id"/>
+					<Label id="label-pid" text="Parent-Id" />
+					<Label id="label-children" text="Children"/>
 				</VBox>
+				<VBox spacing="4">
+					<ComboBox width="125" id="combobox-label" />
+					<ComboBox width="125" id="combobox-weight" />
+					<ComboBox width="125" id="combobox-id" />
+					<ComboBox width="125" id="combobox-pid" />
+					<ComboBox width="125" id="combobox-children" />
+				</VBox>
+			</HBox>
+		</VBox>
+		
+	</comp>
+	<comp title="CUSTOMIZE" open="true">
 				
-				<!-- customize -->
+			<VBox spacing="10"> 
+				<HBox spacing="5">
+					<Label width="50" text="Layout"/>
+					<ComboBox width="125" numVisibleItems="3" id="layout"/>
+				</HBox>
 				
-				<VBox spacing="5"> 
-					<HBox spacing="5">
-						<Label width="100" autosize="false" text="Layout"/>
-						<ComboBox width="115" numVisibleItems="3" id="layoutselect"/>
-					</HBox>
-					<HBox>
-						<Label width="50" text="Labels"/>
-						<VBox spacing="4">
-							<HBox spacing="4" alignment="middle">
-								<CheckBox width="40" label="show" />
-								<ColorChooser usePopup="true" />
-							</HBox>
-							<HBox spacing="4">
-								<ComboBox width="56" numVisibleItems="4" id="label-v"/>
-								<ComboBox width="56" enabled="false" numVisibleItems="3" id="label-h"/>	
-							</HBox>
-						</VBox>
-					</HBox>
-					
+				<VBox spacing="5">
 					<HBox spacing="5">
 						<VBox spacing="6">
-							
-							
-							
 							<Label width="50" text="Color"/>
 						</VBox>
 						<VBox spacing="4">
-							
-							
-							<ComboBox width="115" numVisibleItems="3" id="colorselect"/>
+							<ComboBox width="125" numVisibleItems="3" id="colorMode"/>
 						</VBox>
 					</HBox>
-					
-					
-					<HBox spacing="10">
-						<VBox>
-						<Label width="45" autosize="false" text="Border" />
-						</VBox>
-						<InputText width="25" text="0" />
+					<HBox>
+						<Label width="50" text=".."/>
+						<ColorChooser usePopup="true" id="singleColor" value="0x387396" />
+					</HBox>
+					<VBox id="colorMode-scale">
+						<HBox alignment="middle">
+							<Label width="50" text=".. Value"/>
+							<ComboBox width="125" numVisibleItems="5" id="colorValue"/>
+						</HBox>
+						<HBox>
+							<Label width="50" text=".. Palette"/>
+							<ComboBox width="125" numVisibleItems="3" id="colorScale"/>
+						</HBox>
+						<HBox alignment="middle">
+							
+							<Label width="50" text=".. Range"/>
+							<Label text="Min"/>
+							<Label text="Max"/>
+						</HBox>
 						
-					</HBox>
-			
-					<HBox >
+					</VBox>
 					
-						<InputText width="30" text="0" />
+				</VBox>
+					
+				<VBox spacing="5">
+					<HBox>
+						<Label width="50" text="Labels"/>
+						<HBox spacing="4" alignment="middle">
+							<CheckBox width="56" label="show" id="showLabels" />
+							<ColorChooser usePopup="true" id="lblColor" value="0xFFFFFF" />
+						</HBox>
+					</HBox>
+					<HBox>
+						<Label width="50" text=".. Font"/>
+						<HBox spacing="4" alignment="middle">
+							<ComboBox width="100" numVisibleItems="10" id="lblFont"/>
+							<InputText width="22" height="20" text="12" />
+						</HBox>
+					</HBox>
+					<HBox>
+						<Label width="50" text=".. Align"/>
+						<HBox spacing="4" alignment="middle">
+							<ComboBox width="61" numVisibleItems="3" id="lblVert"/>
+							<ComboBox width="61" numVisibleItems="3" id="lblHorz"/>	
+						</HBox>
+					</HBox>
+				</VBox>
+				<!--
+					<VBox spacing="6">
 						
-					</HBox>					
-				</VBox>	
-				
-				<!-- export -->
-				
-				<VBox spacing="10"> 
-					<HBox >
-						<RadioButton width="40" label="PNG" groupName="exportFormat" />
-						<RadioButton width="40" label="JPG" groupName="exportFormat" />
-						<RadioButton width="40" label="PDF" groupName="exportFormat" />
-						<RadioButton width="40" label="SVG" groupName="exportFormat" />
-					</HBox>
-					<HBox >
-						<RadioButton width="40" groupName="exportFormat" label="HTML" />
-						<RadioButton width="40" groupName="exportFormat" label="D3.JS" />
-						<RadioButton width="40" groupName="exportFormat" label="RAPHAEL" />
-					</HBox>
-					<HBox >
-						<Label text="WIDTH" />
-						<InputText width="43" text="800" />
-						<Label text="HEIGHT" />
-						<InputText width="43" text="600" />
-					</HBox>					
-					<PushButton label="EXPORT TREEMAP" width="170" height="35" />
-				</VBox>		
-			
+						<HBox spacing="4" alignment="middle">
+							
+						</HBox>
+						
+					</VBox>
+					<!--<VBox spacing="4">
+						
+						
+					</VBox>
+				</HBox>-->
+				<!-- -->
+						
 			</VBox>	
-	</Panel>
-</comps>
+
+	</comp>
+	<comp title="EXPORT" open="false">
+		
+		<VBox spacing="10"> 
+			<HBox >
+				<RadioButton width="40" label="PNG" groupName="exportFormat" />
+				<RadioButton width="40" label="JPG" groupName="exportFormat" />
+				<RadioButton width="40" label="PDF" groupName="exportFormat" />
+				<RadioButton width="40" label="SVG" groupName="exportFormat" />
+			</HBox>
+			<HBox >
+				<RadioButton width="40" groupName="exportFormat" label="HTML" />
+				<RadioButton width="40" groupName="exportFormat" label="D3.JS" />
+				<RadioButton width="40" groupName="exportFormat" label="RAPHAEL" />
+			</HBox>
+			<HBox >
+				<Label text="WIDTH" />
+				<InputText width="43" text="800" />
+				<Label text="HEIGHT" />
+				<InputText width="43" text="600" />
+			</HBox>			
+			<PushButton label="EXPORT TREEMAP" width="170" height="35" />
+		</VBox>		
+		
+	</comp>
+</ui>

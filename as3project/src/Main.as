@@ -2,9 +2,11 @@ package
 {
 	import assets.font.Lato;
 	import assets.font.RondaSeven;
+	import com.bit101.components.CheckBox;
 	import com.bit101.components.ComboBox;
 	import com.bit101.components.Component;
 	import com.bit101.components.HBox;
+	import com.bit101.components.PushButton;
 	import com.bit101.components.RadioButton;
 	import com.bit101.components.Style;
 	import com.bit101.utils.MinimalConfigurator;
@@ -20,12 +22,19 @@ package
 	import flash.geom.Rectangle;
 	import flash.net.FileFilter;
 	import flash.net.FileReference;
+	import flash.net.URLLoader;
+	import flash.net.URLRequest;
+	import flash.text.Font;
+	import flash.text.FontStyle;
+	import flash.text.FontType;
+	import flash.text.TextField;
 	import math.Random;
 	import net.vis4.text.Label;
 	import net.vis4.treemap.data.Tree;
 	import net.vis4.treemap.data.TreeNode;
 	import renderer.PreviewRenderer;
 	import ui.MiniTreemap;
+	import ui.Section;
 	import ui.TreemaprLogo;
 
 	
@@ -38,6 +47,8 @@ package
 		protected var conf:MinimalConfigurator;
 		protected var randomValues:Array;
 		protected var fileRef:FileReference;
+		protected var sections:Array = [];
+		protected var sectionsById:Object = { };
 		
 		public function Main():void 
 		{
@@ -60,25 +71,18 @@ package
 			//Style.fontName = 'Lato Normal';
 			//Style.fontSize = 11;
 			
-			conf = new MinimalConfigurator(this);
-			conf.addEventListener(Event.COMPLETE, uiComplete);
-			conf.loadXML('ui/ui.xml');	
+			var ldr:URLLoader = new URLLoader();
+			ldr.addEventListener(Event.COMPLETE, onUiXmlLoaded);
+			ldr.load(new URLRequest('ui/ui.xml'));
 			
-			var sideFont:Lato = new Lato( { color: 0xffffff, size: 14, weight: 400, sharpness:200, thickness: -100 } );
-			var sideAttr:Object = { rotation: -90, selectable: false };
 			
-			new Label('IMPORT', sideFont).attr(sideAttr).place(3, 118, this);
-			new Label('CUSTOMIZE', sideFont).attr(sideAttr).place(3, 365, this);
-			new Label('EXPORT', sideFont).attr(sideAttr).place(3, 495				, this);
-			
-		
 			
 			var treemapConfig:TreeMapConfig = new TreeMapConfig();
 			
 			treemapConfig.padding = 0;
 			treemapConfig.border = 1;
 			
-			var preview:PreviewRenderer = new PreviewRenderer(this, 10, 10, 10, 215);
+			var preview:PreviewRenderer = new PreviewRenderer(this, 10, 10, 10, 222);
 			var t:Number = new Date().time;
 			preview.render(randomTree(), null, treemapConfig);
 			trace('rendering took ' + ((new Date().time - t)) + ' ms');
@@ -135,32 +139,115 @@ package
 			
 		}
 		
+		protected function onUiXmlLoaded(e:Event):void 
+		{
+			var raw:String = URLLoader(e.target).data;
+			
+			try {
+				var uixml:XML = new XML(raw);
+				for each (var sectXML:XML in uixml..comp) {
+					var section:Section = new Section(sectXML.@title, sectXML, sectXML.@open == "true");
+					addChild(section);
+					section.addEventListener(Event.RESIZE, layoutSections);
+					sectionsById[String(sectXML.@title).toLowerCase()] = section;
+					sections.push(section);
+				}
+				layoutSections();
+				
+			
+			} catch (e:Error) {
+				trace('Error while parsing ui xml');
+				return;
+			}
+			
+			initGuiEvents();
+			
+		}
+		
+		protected function initGuiEvents():void 
+		{
+			CB("customize.layout").items = ['squarify', 'slice and dice', 'strip'];
+			CB("customize.layout").selectedIndex = 0;
+			
+			CB("customize.colorMode").items = ['single', 'random', 'by value'];
+			
+			CHK("customize.showLabels").selected = true;
+			CHK("customize.showLabels").addEventListener(Event.CHANGE, onShowLabelsChange);
+			CB("customize.lblVert").items = ['top', 'middle', 'bottom'];
+			CB("customize.lblVert").selectedIndex = 0;;
+			CB("customize.lblHorz").items = ['left', 'center', 'right'];
+			CB("customize.lblHorz").selectedIndex = 0;
+			CB("customize.lblFont").items = getDeviceFonts();   
+		
+			CB("customize.colorScale").items = ['cool', 'hot', 'ramp', 'diverging']; 
+			//sComp("customize.scale").visible = false;
+		}
+		
+		/*
+		 * function taken from http://hasseg.org/blog/post/526/getting-a-list-of-installed-fonts-with-flash-and-javascript/
+		 */
+		protected function getDeviceFonts():Array
+		{
+			var embeddedAndDeviceFonts:Array = Font.enumerateFonts(true);
+		  
+			var deviceFontNames:Array = [];
+			for each (var font:Font in embeddedAndDeviceFonts)
+			{
+				 if (font.fontType == FontType.EMBEDDED
+					  || font.fontStyle != FontStyle.REGULAR
+					  )
+					  continue;
+				 deviceFontNames.push(font.fontName);
+			}
+		  
+			deviceFontNames.sort();
+			return deviceFontNames;
+		}
+		
+		protected function onShowLabelsChange(e:Event):void 
+		{
+			var sl:Boolean = CHK("customize.showLabels").selected;
+			Comp("customize.lblVert").enabled = sl;
+			Comp("customize.lblHorz").enabled = sl;
+			Comp("customize.lblColor").enabled = sl;
+		}
+		
+		protected function layoutSections(e:Event=null):void 
+		{
+			var yo:Number = 70;
+			for each (var s:Section in sections) {
+				s.y = Math.round(yo);
+				yo += s.height + 30;
+				
+			}
+		}
+		
 		protected function uiComplete(e:Event):void 
 		{
 			//ComboBox(conf.getCompById("fooo")).addItem('squarify');
 			//ComboBox(conf.getCompById("fooo")).addItem('slice and dice');
 			//ComboBox(conf.getCompById("fooo")).addItem('strip');
 			
-			combobox("layoutselect").items = ['squarify', 'slice and dice', 'strip'];
-			combobox("colorselect").items = ['single', 'random', 'by value'];
-			combobox("label-v").items = ['off', 'top', 'middle', 'bottom'];
-			combobox("label-h").items = ['left','center','right'];
+			/*CB("import.layoutselect").
+			CB("import.colorselect").items = ['single', 'random', 'by value'];
+			CB("import.label-v").items = ['off', 'top', 'middle', 'bottom'];
+			CB("import.label-h").items = ['left','center','right'];
 			
 			comp("import").addEventListener(MouseEvent.CLICK, showFileDialog);
 			
-			radiobtn("nested").addEventListener(Event.CHANGE, nestedFlatChanged);
+			RB("import.nested").addEventListener(Event.CHANGE, nestedFlatChanged);*/
 		}
 		
 		protected function nestedFlatChanged(e:Event):void 
 		{
-			var nested:Boolean = radiobtn("nested").selected;
+			var nested:Boolean = RB("import.nested").selected;
 			
-			combobox("combobox-children").visible = nested;
-			label("label-children").visible = nested;
-			combobox("combobox-id").visible = !nested;
-			combobox("combobox-pid").visible = !nested;
-			label("label-id").visible = !nested;
-			label("label-pid").visible = !nested;
+			CB("import.combobox-children").visible = nested;
+			L("import.label-children").visible = nested;
+			CB("import.combobox-id").visible = !nested;
+			CB("import.combobox-pid").visible = !nested;
+			L("import.label-id").visible = !nested;
+			L("import.label-pid").visible = !nested;
 		}
 		
 		protected function showFileDialog(e:MouseEvent):void 
@@ -182,40 +269,40 @@ package
 		{
 			var rawfile:String = e.target.data;
 			var filetype:String = TreeImporter.guessFileType(rawfile);
-			label("filetype").text = filetype.toUpperCase();
-			label("filetype").enabled = true;
+			L("import.filetype").text = filetype.toUpperCase();
+			L("import.filetype").enabled = true;
 			
 			switch (filetype) {
 				case "csv": 
-					radiobtn("flat").enabled = true;
-					radiobtn("nested").enabled = false;
-					radiobtn("flat").selected = true;
+					RB("import.flat").enabled = true;
+					RB("import.nested").enabled = false;
+					RB("import.flat").selected = true;
 					break;
 				case "json":
-					radiobtn("flat").enabled = true;
-					radiobtn("nested").enabled = true;
+					RB("import.flat").enabled = true;
+					RB("import.nested").enabled = true;
 					break;
 				case "xml":
 					
 					try {
 						var desc:DataDescription = XMLTreeImporter.describeData(XML(rawfile));
 						
-						radiobtn("flat").enabled = true;
-						radiobtn("nested").enabled = true;
+						RB("import.flat").enabled = true;
+						RB("import.nested").enabled = true;
 						
-						combobox("combobox-label").items = desc.columns;
-						combobox("combobox-weight").items = desc.columns;
-						combobox("combobox-id").items = desc.columns;
-						combobox("combobox-pid").items = desc.columns;
-						combobox("combobox-children").items = desc.columns;
+						CB("import.combobox-label").items = desc.columns;
+						CB("import.combobox-weight").items = desc.columns;
+						CB("import.combobox-id").items = desc.columns;
+						CB("import.combobox-pid").items = desc.columns;
+						CB("import.combobox-children").items = desc.columns;
 						
-						if (desc.nested) radiobtn("nested").selected = true;
-						else radiobtn("flat").selected = true;
+						if (desc.nested) RB("import.nested").selected = true;
+						else RB("import.flat").selected = true;
 						
 					} catch (e:Error) {
-						label("filetype").text = "Error";
-						radiobtn("flat").enabled = false;
-						radiobtn("nested").enabled = false;
+						L("import.filetype").text = "Error";
+						RB("import.flat").enabled = false;
+						RB("import.nested").enabled = false;
 					}
 					
 					break;
@@ -248,11 +335,25 @@ package
 			}
 			return new Tree(root);
 		}
+		
+		protected function PB(id:String):PushButton { return PushButton(Comp(id));  }
+		
+		protected function CB(id:String):ComboBox { return ComboBox(Comp(id));  }
+		
+		protected function CHK(id:String):CheckBox { return CheckBox(Comp(id));  }
+		
+		protected function RB(id:String):RadioButton { return RadioButton(Comp(id));  }
+		
+		protected function L(id:String):com.bit101.components.Label 
+		{ 
+			return com.bit101.components.Label(Comp(id));
+		}
 
-		protected function label(id:String):com.bit101.components.Label { return com.bit101.components.Label(conf.getCompById(id));  }
-		protected function combobox(id:String):ComboBox { return ComboBox(conf.getCompById(id));  }
-		protected function comp(id:String):Component { return conf.getCompById(id); }
-		protected function radiobtn(id:String):RadioButton { return RadioButton(conf.getCompById(id)); }
+		protected function Comp(id:String):Component
+		{
+			var n:Array = id.split('.');
+			return sectionsById[n[0]].minimalconf.getCompById(n[1]);
+		}
 		
 	}
 	

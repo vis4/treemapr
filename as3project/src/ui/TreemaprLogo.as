@@ -15,7 +15,7 @@ package ui
 		
 		public function TreemaprLogo(main:Sprite) 
 		{
-			new Label('TREEMAPR', new Lato( { color: 0xffffff, size: 30, weight: 300 } )).place(45, 5, this);
+			new Label('TREEMAPR', new Lato( { color: 0xffffff, size: 32, weight: 300, thickness:0 } )).place(45, 4, this);
 			Random.randomSeed();
 			var randomValues:Array = [];
 			var i:uint = Random.integer(4, 10);
@@ -23,7 +23,7 @@ package ui
 				randomValues.push(Random.integer(1, 30));
 			}
 			
-			addChild(new MiniTreemap(randomValues, new Rectangle(10, 12, 30, 26)));
+			addChild(new MiniTreemap(randomValues, new Rectangle(10, 12, 30, 27)));
 			
 			main.addChild(this);
 		}
