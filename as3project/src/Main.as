@@ -25,6 +25,7 @@ package
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
+	import flash.external.ExternalInterface;
 	import flash.geom.Rectangle;
 	import flash.net.FileFilter;
 	import flash.net.FileReference;
@@ -362,6 +363,12 @@ package
 				case 'PDF':
 					exportPDF(w, h); break;
 			}
+			
+			try {
+				if (ExternalInterface.available) {
+					ExternalInterface.call('trackExport', format);
+				}
+			} catch (e:Error) {}
 		}
 		
 		protected function exportAsImage(format:String, w:Number, h:Number):void

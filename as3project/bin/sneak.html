@@ -45,6 +45,19 @@
 	var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 11);
 	piwikTracker.trackPageView();
 	piwikTracker.enableLinkTracking();
+	
+	function trackExport(format) {
+		switch (format) {
+			case 'PNG': return piwikTracker.trackGoal(1); 
+			case 'JPG': return piwikTracker.trackGoal(2); 
+			case 'PDF': return piwikTracker.trackGoal(3); 
+			case 'SVG': return piwikTracker.trackGoal(4); 
+			case 'HTML': return piwikTracker.trackGoal(5); 
+			case 'D3.JS': return piwikTracker.trackGoal(6); 
+			case 'RAPHAEL': return piwikTracker.trackGoal(7); 
+		}
+	};
+	
 	} catch( err ) {}
 	</script><noscript><p><img src="http://stats.treemapr.net/piwik.php?idsite=11" style="border:0" alt="" /></p></noscript>
 	<!-- End Piwik Tracking Code -->
