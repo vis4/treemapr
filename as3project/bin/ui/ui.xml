@@ -156,7 +156,7 @@
 			</VBox>	
 
 	</comp>
-	<comp title="EXPORT" open="false">
+	<comp title="EXPORT" open="true">
 		
 		<VBox spacing="10"> 
 			<HBox >
