@@ -45,6 +45,8 @@ package renderer
 			// ignore bounds
 			bounds = _container.stage ? new Rectangle(_left, _top, _container.stage.stageWidth - _left - _right, _container.stage.stageHeight - _top - _bottom) : bounds;
 			
+			super.render(tree, bounds, tmconfig);
+			
 			// remove old treemap
 			if (_lastTreeMap !== null) {
 				_container.removeChild(_lastTreeMap);
@@ -58,12 +60,11 @@ package renderer
 			
 			_container.addChild(treemap);
 			
-			// save for on-resize rendering
-			_lastConfig = tmconfig;
+			// save for on-resize renderin
 			_lastTree = tree;
 			_lastTreeMap = treemap;
 			
-			treemap.render();
+			treemap.render(_lastConfig.maxDepth);
 		}
 		
 		protected var _labelCache:Array = [];

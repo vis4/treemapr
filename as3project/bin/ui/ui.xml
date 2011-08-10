@@ -32,10 +32,19 @@
 	<comp title="CUSTOMIZE" open="true">
 				
 			<VBox spacing="15"> 
-				<HBox spacing="5">
-					<Label width="50" text="LAYOUT"/>
-					<ComboBox width="125" numVisibleItems="3" id="layout"/>
-				</HBox>
+				<VBox>
+					
+					<HBox spacing="5">
+						<Label width="50" text="LAYOUT"/>
+						<ComboBox width="125" numVisibleItems="3" id="layout"/>
+					</HBox>
+					
+					<HBox spacing="5">
+						<Label width="42" text=".. Depth"/>
+						<HUISlider width="160" labelPrecision="0" tick="1" id="depth" />
+					</HBox>
+				</VBox>
+				
 				
 				<VBox spacing="5">
 					<HBox>

@@ -34,6 +34,8 @@ package config
 		
 		public var labelProperty:String = 'name';
 		
+		public var maxDepth:uint = 1;
+		
 	}
 
 }

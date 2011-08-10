@@ -41,6 +41,21 @@ package renderer
 				case 'random': 
 					if (node.hasChildren) return Color.fromHSV(Random.integer(0, 360), .8, .65)._int;
 					return Color.fromInt(node.parent.layout.color).lightness('*' + (.9 + Random.next() * .2))._int; 
+				case 'rainbow':
+					
+					if (node.parent == null) {
+						node.data.rainbowMinHue = 0;
+						node.data.rainbowMaxHue = 360;
+					} else {
+						var parent:TreeNode = node.parent, 
+							 childHueRange:Number = (parent.data.rainbowMaxHue - parent.data.rainbowMinHue) / parent.children.length;
+						node.data.rainbowMinHue = 
+							parent.data.rainbowMinHue + parent.children.indexOf(node)*childHueRange;
+						node.data.rainbowMaxHue = node.data.rainbowMinHue + childHueRange;
+						trace(node.data.name, node.data.rainbowMinHue, node.data.rainbowMaxHue, childHueRange);
+					}
+					
+					return Color.fromHSV(node.data.rainbowMinHue+(node.data.rainbowMaxHue-node.data.rainbowMinHue)*.5, .8, .65)._int;
 			}
 		}
 		

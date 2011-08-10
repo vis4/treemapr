@@ -9,6 +9,7 @@ package
 	import com.bit101.components.ComboBox;
 	import com.bit101.components.Component;
 	import com.bit101.components.HBox;
+	import com.bit101.components.HUISlider;
 	import com.bit101.components.InputText;
 	import com.bit101.components.PushButton;
 	import com.bit101.components.RadioButton;
@@ -194,7 +195,7 @@ package
 			CB('customize.layout').selectedIndex = 0;
 			CB('customize.layout').addEventListener(Event.SELECT, updateTreeMap);
 			
-			CB("customize.colorMode").items = ['single', 'random', 'by value'];
+			CB("customize.colorMode").items = ['single', 'rainbow', 'random', 'by value'];
 			
 			CHK("customize.showLabels").selected = true;
 			CHK("customize.showLabels").addEventListener(Event.CHANGE, onShowLabelsChange);
@@ -244,6 +245,10 @@ package
 			
 			_demoTree = new Tree(parseFlareTree(jsondata));
 			
+			HUI('customize.depth').maximum = _demoTree.depth;
+			HUI('customize.depth').value = _demoTree.depth;
+			HUI('customize.depth').addEventListener(Event.CHANGE, updateTreeMap);
+			
 			CB('customize.colorValue').items = _dataColumns;
 			
 			updateTreeMap();
@@ -280,7 +285,7 @@ package
 			tmconf.labelVertAlign = String(CB('customize.lblVert').selectedItem);
 			tmconf.labelSize = Number(IT('customize.lblFontSize').text);
 			tmconf.layout = String(CB('customize.layout').selectedItem);
-			
+			tmconf.maxDepth = HUI('customize.depth').value;
 			tmconf.colorMode = String(CB('customize.colorMode').selectedItem);
 			tmconf.singleColor = CS('customize.singleColor').value;
 			
@@ -504,6 +509,7 @@ package
 			return new Tree(root);
 		}
 		
+		protected function HUI(id:String):HUISlider { return HUISlider(Comp(id)); }
 		
 		protected function IT(id:String):InputText { return InputText(Comp(id));  }
 		
